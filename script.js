@@ -8,6 +8,16 @@ const todos = loadTodos()
 
 todos.forEach(renderTodo)
 
+list.addEventListener("change", e => {
+  if (!e.target.matches("[data-list-item-checkbox]")) return
+
+  const parent = e.target.closest(".list-item")
+  const todoId = parent.dataset.todoId
+  const todo = todos.find(t => t.id === todoId)
+  todo.complete = e.target.checked
+  saveTodos()
+})
+
 form.addEventListener("submit", e => {
   e.preventDefault()
 
@@ -16,6 +26,7 @@ form.addEventListener("submit", e => {
   if (todoName === "") return
 
   const newTodo = {
+    id: new Date().valueOf().toString(), // converting it to string becuase of easy comparison as local storage converts everything to string. Using this id to be able to uniquely identify each of the todo when it's clicked to be completed or uncompleted
     name: todoName,
     complete: false
   }
@@ -28,6 +39,8 @@ form.addEventListener("submit", e => {
 
 function renderTodo(todo) {
   const templateClone = template.content.cloneNode(true)
+  const listItem = templateClone.querySelector(".list-item")
+  listItem.dataset.todoId = todo.id
   const textElement = templateClone.querySelector("[data-list-item-text]")
   const checkbox = templateClone.querySelector("[data-list-item-checkbox]")
 
@@ -46,8 +59,6 @@ function loadTodos() {
   return JSON.parse(todosString) || []
 }
 
-// This should then add the todo to the list above.
-
+function completeTodos(todo) {}
 // 2. Delete Todos
 // 3. Complete Todos
-// 5. Load Todos
