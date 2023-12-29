@@ -15,16 +15,25 @@ form.addEventListener("submit", e => {
 
   if (todoName === "") return
 
-  todos.push(todoName)
-  renderTodo(todoName)
+  const newTodo = {
+    name: todoName,
+    complete: false
+  }
+
+  todos.push(newTodo)
+  renderTodo(newTodo)
   saveTodos()
   todoInput.value = ""
 })
 
-function renderTodo(todoName) {
+function renderTodo(todo) {
   const templateClone = template.content.cloneNode(true)
   const textElement = templateClone.querySelector("[data-list-item-text]")
-  textElement.innerText = todoName
+  const checkbox = templateClone.querySelector("[data-list-item-checkbox]")
+
+  textElement.innerText = todo.name
+  checkbox.checked = todo.complete
+
   list.appendChild(templateClone)
 }
 
