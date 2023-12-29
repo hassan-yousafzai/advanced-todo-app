@@ -4,7 +4,7 @@ const list = document.querySelector("#list")
 const template = document.querySelector("#list-item-template")
 const LOCAL_STORAGE_PREFIX = "ADVANCED_TODO_LIST-"
 const TODOS_STORAGE_KEY = `${LOCAL_STORAGE_PREFIX}-todos`
-const todos = loadTodos()
+let todos = loadTodos()
 
 todos.forEach(renderTodo)
 
@@ -12,10 +12,21 @@ list.addEventListener("change", e => {
   if (!e.target.matches("[data-list-item-checkbox]")) return
 
   const parent = e.target.closest(".list-item")
+
   const todoId = parent.dataset.todoId
   const todo = todos.find(t => t.id === todoId)
   todo.complete = e.target.checked
   saveTodos()
+})
+
+list.addEventListener("click", e => {
+  if (!e.target.matches("[data-button-delete]")) return
+
+  const parent = e.target.closest(".list-item")
+  const todoId = parent.dataset.todoId
+  parent.remove() // remove todo from the screen
+  todos = todos.filter(todo => todo.id !== todoId) // remove todo from the list
+  saveTodos() // resave the todos
 })
 
 form.addEventListener("submit", e => {
@@ -58,7 +69,3 @@ function loadTodos() {
   const todosString = localStorage.getItem(TODOS_STORAGE_KEY)
   return JSON.parse(todosString) || []
 }
-
-function completeTodos(todo) {}
-// 2. Delete Todos
-// 3. Complete Todos
